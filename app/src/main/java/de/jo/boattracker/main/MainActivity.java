@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     LocationManager locationManager;
 
     final static String[] PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-    final static int PERM_ALL = 1;
+    final static int PERM_ALL = 1;//
 
     TextView lon;
     TextView lat;
