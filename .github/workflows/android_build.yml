@@ -23,3 +23,8 @@ jobs:
 
       - name: Build Project
         run: ./gradlew assemble
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: build/libs
