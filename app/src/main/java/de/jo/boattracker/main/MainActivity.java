@@ -52,9 +52,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         lat.setY(10);
         lat.setX(580);
         lat.setTextSize(20f);
+        lon.setText("Lon: ");
+        lat.setText("Lat: ");
         kn.setY(50);
         kn.setX(80);
         kn.setTextSize(85f);
+        kn.setText("Kn: ");
+        maxSpeed.setText("Max Kn: ");
         maxSpeed.setTextSize(50f);
         maxSpeed.setX(80);
         maxSpeed.setY(290);
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             DecimalFormat df = new DecimalFormat("#0,00");
             double speed = location.getSpeed() * 0.5399568035;
             kn.setText(String.format("Kn: %s", df.format(speed)));
-            maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
+            maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
