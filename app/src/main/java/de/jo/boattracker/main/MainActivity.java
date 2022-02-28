@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "loc", Toast.LENGTH_SHORT).show();
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5, this);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 2, this);
             }
         }
     }
