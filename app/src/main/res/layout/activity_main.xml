@@ -21,4 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/maxSpeed" tools:layout_editor_absoluteY="39dp"
             tools:layout_editor_absoluteX="177dp" tools:ignore="MissingConstraints"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/heading" tools:layout_editor_absoluteY="39dp"
+            tools:layout_editor_absoluteX="177dp" tools:ignore="MissingConstraints"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

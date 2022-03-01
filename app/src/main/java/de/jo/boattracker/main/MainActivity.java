@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView lat;
     TextView kn;
     TextView maxSpeed;
+    TextView heading;
 
     double maxSpeedD = 0.00D;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         lat = findViewById(R.id.Lat);
         kn = findViewById(R.id.kn);
         maxSpeed = findViewById(R.id.maxSpeed);
+        heading = findViewById(R.id.heading);
 
         lon.setY(10);
         lon.setX(80);
@@ -62,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         maxSpeed.setTextSize(50f);
         maxSpeed.setX(80);
         maxSpeed.setY(290);
+        heading.setX(85);
+        heading.setY(500);
+        heading.setTextSize(65f);
+        heading.setText("0");
     }
 
     @Override
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         assert lat != null;
         assert kn != null;
         assert maxSpeed != null;
+        assert heading != null;
         lon.setText(String.format("Lon: %s", location.getLongitude()));
         lat.setText(String.format("Lat: %s", location.getLatitude()));
         if (location.getAccuracy() <= 16) {
@@ -79,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             double speed = location.getSpeed() * 0.5399568035;
             kn.setText(String.format("Kn: %s", df.format(speed)));
             maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
+
+            heading.setText(location.getBearing());
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
