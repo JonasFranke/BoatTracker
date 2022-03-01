@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             kn.setText(String.format("Kn: %s", df.format(speed)));
             maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
 
-            heading.setText(location.getBearing());
+            heading.setText(String.valueOf(location.getBearing()));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
