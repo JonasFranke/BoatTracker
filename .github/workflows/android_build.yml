@@ -25,7 +25,14 @@ jobs:
       - name: Build Project
         run: ./gradlew assemble
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Package
-          path: build/libs
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+      - name: Releasing using Hub
+        uses: VladDaniliuk/action-release-releaseapk@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          VERSION_VARIABLE: versionName
+          APP_FILE: buildSrc/Android.kt
+          APP_FOLDER: app
+          RELEASE_TITLE: New Build
+          NAME_VARIABLE: app-release.apk
