@@ -49,24 +49,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         maxSpeed = findViewById(R.id.maxSpeed);
         heading = findViewById(R.id.heading);
 
-        lon.setY(10);
-        lon.setX(80);
         lon.setTextSize(20f);
-        lat.setY(10);
-        lat.setX(580);
         lat.setTextSize(20f);
         lon.setText("Lon: ");
         lat.setText("Lat: ");
-        kn.setY(50);
-        kn.setX(80);
         kn.setTextSize(85f);
         kn.setText("Kn: ");
         maxSpeed.setText("Max Kn: ");
         maxSpeed.setTextSize(50f);
-        maxSpeed.setX(80);
-        maxSpeed.setY(290);
-        heading.setX(85);
-        heading.setY(500);
         heading.setTextSize(65f);
         heading.setText("0");
     }
