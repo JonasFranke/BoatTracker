@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import de.jo.boattracker.R;
+import de.jo.boattracker.util.SpeedConverter;
 
 import java.text.DecimalFormat;
 
@@ -83,11 +84,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         lat.setText(String.format("Lat: %s", location.getLatitude()));
         if (location.getAccuracy() <= 16) {
             DecimalFormat df = new DecimalFormat("#0,00");
-            double speed = location.getSpeed() * 0.5399568035;
+            double speed = SpeedConverter.getMetersPerSecondToKnots(location.getSpeed());
             kn.setText(String.format("Kn: %s", df.format(speed)));
             maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
 
-            heading.setText(String.valueOf(location.getBearing()));
+            heading.setText(String.valueOf(location.getBearing() + "°"));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
