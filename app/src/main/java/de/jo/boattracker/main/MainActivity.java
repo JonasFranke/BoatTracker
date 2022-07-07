@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     double oldLat = -1;
     double oldLong = -1;
     long oldTime = -1;
+    Location oldLoc;
 
 
     @Override
@@ -90,10 +91,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         lon.setText(String.format("Lon: %s", location.getLongitude()));
         lat.setText(String.format("Lat: %s", location.getLatitude()));
         if (location.getAccuracy() <= 16) {
-            if (oldLat != -1 && oldLong != -1 && oldTime != -1) {
+            if (oldLat != -1 || oldLong != -1 || oldTime != -1 || oldLoc != null) {
                 DecimalFormat df = new DecimalFormat("#0,00");
-                double speed = getSpeed(calculateDistance(oldLat, oldLong, location.getLatitude(), location.getLongitude()), oldTime, location.getTime());
-                double speedKnots = SpeedConverter.getMetersPerSecondToKnots(getSpeed(calculateDistance(oldLat, oldLong, location.getLatitude(), location.getLongitude()), oldTime, location.getTime()));
+                double speed = getSpeed((long) location.distanceTo(oldLoc), oldTime, System.currentTimeMillis());
+                double speedKnots = SpeedConverter.getMetersPerSecondToKnots(getSpeed(calculateDistance(oldLat, oldLong, location.getLatitude(), location.getLongitude()), oldTime, System.currentTimeMillis()));
                 kn.setText(String.format("Kn: %s M/S: %s", df.format(speedKnots), df.format(speed)));
                 maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             oldTime = System.currentTimeMillis();
             oldLat = location.getLatitude();
             oldLong = location.getLongitude();
+            oldLoc = location;
 
         }
 
