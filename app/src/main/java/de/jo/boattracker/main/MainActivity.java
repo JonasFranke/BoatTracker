@@ -1,6 +1,7 @@
 package de.jo.boattracker.main;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextView maxSpeed;
     TextView heading;
 
-    double maxSpeedD = 0.00D;
+    float maxSpeedD = 0.00f;
 
     float degreeStart = 0f;
 
@@ -84,23 +85,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         assert maxSpeed != null;
         assert heading != null;
         loc.setText(String.format("Lon: %s Lat: %s", location.getLongitude(), location.getLatitude()));
-        if (location.getAccuracy() <= 16) {
-            if (oldLat != -1 || oldLong != -1 || oldTime != -1 || oldLoc != null) {
-                DecimalFormat df = new DecimalFormat("%.2f");
-                float speed = location.getSpeed();
-                double speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
-                kn.setText(String.format("Kn: %s M/S: %s", df.format(speedKnots), df.format(speed)));
-                maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
+        if (location.getAccuracy() <= 16 && location.hasSpeed()) {
+            float speed = location.getSpeed();
+            float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
+            kn.setText(String.format("Kn: %s", speedKnots));
+            maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
 
-                if (speed > maxSpeedD) {
-                    maxSpeedD = speed;
-                }
+            if (speed > maxSpeedD) {
+                maxSpeedD = speed;
             }
-            oldTime = System.currentTimeMillis();
-            oldLat = location.getLatitude();
-            oldLong = location.getLongitude();
-            oldLoc = location;
 
+            System.out.println("NO Speed");
+        } else {
+            Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
+            System.out.println("NO Speed");
         }
 
     }
