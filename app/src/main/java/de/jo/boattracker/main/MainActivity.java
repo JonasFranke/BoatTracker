@@ -1,6 +1,7 @@
 package de.jo.boattracker.main;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,13 +30,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     final static String[] PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
     final static int PERM_ALL = 1;
 
-    TextView lon;
-    TextView lat;
+    TextView loc;
     TextView kn;
     TextView maxSpeed;
     TextView heading;
 
-    double maxSpeedD = 0.00D;
+    float maxSpeedD = 0.00f;
 
     float degreeStart = 0f;
 
@@ -61,16 +61,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void init() {
-        lon = findViewById(R.id.Long);
-        lat = findViewById(R.id.Lat);
+        loc = findViewById(R.id.LongLat);
         kn = findViewById(R.id.kn);
         maxSpeed = findViewById(R.id.maxSpeed);
         heading = findViewById(R.id.heading);
 
-        lon.setTextSize(16f);
-        lat.setTextSize(16f);
-        lon.setText("Lon: ");
-        lat.setText("Lat: ");
+        loc.setTextSize(16f);
+        loc.setText("Lon:          Lat:");
         kn.setTextSize(85f);
         kn.setText("Kn: ");
         maxSpeed.setText("Max Kn: ");
@@ -83,30 +80,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(@NonNull Location location) {
         System.out.println(location.getLatitude());
 
-        assert lon != null;
-        assert lat != null;
+        assert loc != null;
         assert kn != null;
         assert maxSpeed != null;
         assert heading != null;
-        lon.setText(String.format("Lon: %s", location.getLongitude()));
-        lat.setText(String.format("Lat: %s", location.getLatitude()));
-        if (location.getAccuracy() <= 16) {
-            if (oldLat != -1 || oldLong != -1 || oldTime != -1 || oldLoc != null) {
-                DecimalFormat df = new DecimalFormat("#0,00");
-                double speed = getSpeed((long) location.distanceTo(oldLoc), oldTime, System.currentTimeMillis());
-                double speedKnots = SpeedConverter.getMetersPerSecondToKnots(getSpeed(calculateDistance(oldLat, oldLong, location.getLatitude(), location.getLongitude()), oldTime, System.currentTimeMillis()));
-                kn.setText(String.format("Kn: %s M/S: %s", df.format(speedKnots), df.format(speed)));
-                maxSpeed.setText(String.format("Max Kn: %s", df.format(maxSpeedD)));
+        loc.setText(String.format("Lon: %s Lat: %s", location.getLongitude(), location.getLatitude()));
+        if (location.getAccuracy() <= 16 && location.hasSpeed()) {
+            float speed = location.getSpeed();
+            float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
+            kn.setText(String.format("Kn: %s", speedKnots));
+            maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
 
-                if (speed > maxSpeedD) {
-                    maxSpeedD = speed;
-                }
+            if (speed > maxSpeedD) {
+                maxSpeedD = speed;
             }
-            oldTime = System.currentTimeMillis();
-            oldLat = location.getLatitude();
-            oldLong = location.getLongitude();
-            oldLoc = location;
 
+            System.out.println("NO Speed");
+        } else {
+            Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
+            System.out.println("NO Speed");
         }
 
     }
@@ -154,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
     //https://stackoverflow.com/questions/20398898/how-to-get-speed-in-android-app-using-location-or-accelerometer-or-some-other-wa
-    private long calculateDistance(double lat1, double lng1, double lat2, double lng2) {
+    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lng2 - lng1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
@@ -165,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return Math.round(6371000 * c);
     }
 
-    private long getSpeed(long dist, long oldTime, long time) {
+    private double getSpeed(long dist, long oldTime, long time) {
         return  dist / (time - oldTime);
     }
 }
