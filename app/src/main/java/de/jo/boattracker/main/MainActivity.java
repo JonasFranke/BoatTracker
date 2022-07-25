@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         heading = findViewById(R.id.heading);
 
         loc.setTextSize(16f);
-        loc.setText("Lon:          Lat:");
+        loc.setText("Lon:  Lat:");
         kn.setTextSize(85f);
         kn.setText("Kn: ");
         maxSpeed.setText("Max Kn: ");
