@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "loc", Toast.LENGTH_SHORT).show();
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 2, this);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
             }
         }
     }
@@ -145,19 +145,4 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
-    //https://stackoverflow.com/questions/20398898/how-to-get-speed-in-android-app-using-location-or-accelerometer-or-some-other-wa
-    private double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lng2 - lng1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
-                * Math.sin(dLon / 2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        return Math.round(6371000 * c);
-    }
-
-    private double getSpeed(long dist, long oldTime, long time) {
-        return  dist / (time - oldTime);
-    }
 }
