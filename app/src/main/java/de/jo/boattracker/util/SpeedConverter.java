@@ -10,7 +10,7 @@ public class SpeedConverter {
         return kn / 1.94f;
     }
 
-    public static String shortenSpeed(float speed) {
+    public static float shortenSpeed(float speed) {
         char[] c = String.valueOf(speed).toCharArray();
         StringBuilder rs = new StringBuilder();
         int current = 0;
@@ -27,6 +27,6 @@ public class SpeedConverter {
                 break;
             }
         }
-        return rs.toString();
+        return Float.parseFloat(rs.toString());
     }
 }

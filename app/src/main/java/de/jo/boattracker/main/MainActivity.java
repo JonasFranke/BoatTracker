@@ -21,6 +21,7 @@ import de.jo.boattracker.R;
 import de.jo.boattracker.util.SpeedConverter;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, SensorEventListener {
 
@@ -30,19 +31,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     final static String[] PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
     final static int PERM_ALL = 1;
 
-    TextView loc;
-    TextView kn;
-    TextView maxSpeed;
-    TextView heading;
+    TextView loc, kn, maxSpeed, avgSpeed, heading;
 
     float maxSpeedD = 0.00f;
+    private ArrayList<Float> speeds = new ArrayList<>();
 
     float degreeStart = 0f;
-
-    double oldLat = -1;
-    double oldLong = -1;
-    long oldTime = -1;
-    Location oldLoc;
 
 
     @Override
@@ -64,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         loc = findViewById(R.id.LongLat);
         kn = findViewById(R.id.kn);
         maxSpeed = findViewById(R.id.maxSpeed);
+        avgSpeed = findViewById(R.id.avgSpeed);
         heading = findViewById(R.id.heading);
 
         loc.setTextSize(16f);
@@ -72,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         kn.setText("Kn: ");
         maxSpeed.setText("Max Kn: ");
         maxSpeed.setTextSize(50f);
+        avgSpeed.setText("Avg. Kn: ");
+        avgSpeed.setTextSize(50f);
         heading.setTextSize(65f);
         heading.setText("0");
     }
@@ -89,12 +86,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
             kn.setText(String.format("Kn: %s", SpeedConverter.shortenSpeed(speedKnots)));
             maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
+            avgSpeed.setText(String.format("Avg. Kn: %s", speeds.size() > 2 ? calcAvg(speeds) : ""));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
             } else if (maxSpeedD == 0.00f) {
-                maxSpeedD = speed;//TODO: Avg Speed
+                maxSpeedD = speed;
             }
+
+            speeds.add(SpeedConverter.shortenSpeed(speedKnots));
 
         } else {
             Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
@@ -144,5 +144,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
+
+    public float calcAvg(ArrayList<Float> speeds) {
+        float total = 0.0f;
+        for (Float f : speeds) {
+            total = total + f;
+        }
+        return total / speeds.size();
+    }
 
 }
