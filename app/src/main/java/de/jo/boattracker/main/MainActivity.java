@@ -82,20 +82,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         assert loc != null;
         assert kn != null;
-        assert maxSpeed != null;
         assert heading != null;
         loc.setText(String.format("Lon: %s Lat: %s", location.getLongitude(), location.getLatitude()));
         if (location.getAccuracy() <= 16 && location.hasSpeed()) {
             float speed = location.getSpeed();
             float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
-            kn.setText(String.format("Kn: %s", speedKnots));
+            kn.setText(String.format("Kn: %s", SpeedConverter.shortenSpeed(speedKnots)));
             maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
+            } else if (maxSpeedD == 0.00f) {
+                maxSpeedD = speed;//TODO: Avg Speed
             }
 
-            System.out.println("NO Speed");
         } else {
             Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
             System.out.println("NO Speed");
