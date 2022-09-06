@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void clearList(float currentAvg) {
-        speeds.clearList();
+        speeds.clear();
         speeds.add(currentAvg);
     }
 
