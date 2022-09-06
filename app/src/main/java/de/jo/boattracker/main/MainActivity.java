@@ -150,7 +150,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         for (Float f : speeds) {
             total = total + f;
         }
-        return total / speeds.size();
+        float avg = total / speeds.size() + 1;
+        if (speeds.size > 100) {
+            clearList(avg);
+        }
+        return avg;
+    }
+
+    private void clearList(float currentAvg) {
+        speeds.clearList();
+        speeds.add(currentAvg);
     }
 
 }
