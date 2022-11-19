@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
             kn.setText(String.format("Kn: %s", SpeedConverter.shortenSpeed(speedKnots)));
             maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
-            avgSpeed.setText(String.format("Avg. Kn: %s", speeds.size() > 2 ? calcAvg(speeds) : ""));
+            avgSpeed.setText(String.format("Avg. Kn: %s", calcAvg(speeds)));
 
             if (speed > maxSpeedD) {
                 maxSpeedD = speed;
@@ -126,12 +126,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void requestLocation() {
-        assert locationManager != null;
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "loc", Toast.LENGTH_SHORT).show();
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+        try {
+            assert locationManager != null;
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "loc", Toast.LENGTH_SHORT).show();
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, this);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -145,16 +149,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
-    public float calcAvg(ArrayList<Float> speeds) {
-        float total = 0.0f;
-        for (Float f : speeds) {
-            total = total + f;
+
+
+    private String calcAvg(ArrayList<Float> speeds) {
+        float sum = 0;
+        for (float speed : speeds) {
+            sum += speed;
         }
-        float avg = total / speeds.size() + 1;
-        if (speeds.size() > 100) {
+        float avg = sum / speeds.size();
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        if (speeds.size() > 200) {
             clearList(avg);
         }
-        return avg;
+
+        return df.format(avg);
     }
 
     private void clearList(float currentAvg) {
