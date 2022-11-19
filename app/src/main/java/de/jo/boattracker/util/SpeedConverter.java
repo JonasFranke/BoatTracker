@@ -10,7 +10,7 @@ public class SpeedConverter {
         return kn / 1.94f;
     }
 
-    public static float shortenSpeed(float speed) {
+    public static float shortenSpeed(float speed) throws ArrayIndexOutOfBoundsException{
         char[] c = String.valueOf(speed).toCharArray();
         StringBuilder rs = new StringBuilder();
         int current = 0;
@@ -22,9 +22,13 @@ public class SpeedConverter {
                 rs.append(".");
                 current ++;
                 rs.append(c[current]);
-                current ++;
-                rs.append(c[current]);
-                break;
+                try {
+                    current ++;
+                    rs.append(c[current]);
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                } finally {
+                    break;
+                }
             }
         }
         return Float.parseFloat(rs.toString());

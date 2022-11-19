@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        System.out.println(location.getLatitude());
-
         assert loc != null;
         assert kn != null;
         assert heading != null;
