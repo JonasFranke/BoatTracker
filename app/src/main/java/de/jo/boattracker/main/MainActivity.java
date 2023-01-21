@@ -1,7 +1,6 @@
 package de.jo.boattracker.main;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -31,10 +30,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     final static String[] PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
     final static int PERM_ALL = 1;
 
-    TextView loc, kn, maxSpeed, avgSpeed, heading;
+    TextView loc, kn, maxSpeed, avgSpeed, heading, acc;
 
     float maxSpeedD = 0.00f;
-    private ArrayList<Float> speeds = new ArrayList<>();
+    private final ArrayList<Float> speeds = new ArrayList<>();
 
     float degreeStart = 0f;
 
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         maxSpeed = findViewById(R.id.maxSpeed);
         avgSpeed = findViewById(R.id.avgSpeed);
         heading = findViewById(R.id.heading);
+        acc = findViewById(R.id.acc);
 
         loc.setTextSize(16f);
         loc.setText("Lon:  Lat:");
@@ -75,28 +75,33 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        assert loc != null;
-        assert kn != null;
-        assert heading != null;
-        loc.setText(String.format("Lon: %s Lat: %s", location.getLongitude(), location.getLatitude()));
-        if (location.getAccuracy() <= 16 && location.hasSpeed()) {
-            float speed = location.getSpeed();
-            float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
-            kn.setText(String.format("Kn: %s", SpeedConverter.shortenSpeed(speedKnots)));
-            maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
-            avgSpeed.setText(String.format("Avg. Kn: %s", calcAvg(speeds)));
+        try {
+            assert loc != null;
+            assert kn != null;
+            assert heading != null;
+            loc.setText(String.format("Lon: %s Lat: %s", location.getLongitude(), location.getLatitude()));
+            if (location.getAccuracy() <= 16 && location.hasSpeed()) {
+                float speed = location.getSpeed();
+                float speedKnots = SpeedConverter.getMetersPerSecondToKnots(speed);
+                kn.setText(String.format("Kn: %s", SpeedConverter.shortenSpeed(speedKnots)));
+                maxSpeed.setText(String.format("Max Kn: %s", maxSpeedD));
+                avgSpeed.setText(String.format("Avg. Kn: %s", calcAvg(speeds)));
 
-            if (speed > maxSpeedD) {
-                maxSpeedD = speed;
-            } else if (maxSpeedD == 0.00f) {
-                maxSpeedD = speed;
+                if (speed > maxSpeedD) {
+                    maxSpeedD = speed;
+                } else if (maxSpeedD == 0.00f) {
+                    maxSpeedD = speed;
+                }
+
+                speeds.add(SpeedConverter.shortenSpeed(speedKnots));
+
+            } else {
+                Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
+                System.out.println("NO Speed");
             }
-
-            speeds.add(SpeedConverter.shortenSpeed(speedKnots));
-
-        } else {
-            Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
-            System.out.println("NO Speed");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -139,13 +144,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float degree = Math.round(event.values[0]);
-        heading.setText(String.format("%s°", (int) degree));
-        degreeStart = -degree;
+        try {
+            float degree = Math.round(event.values[0]);
+            heading.setText(String.format("%s°", (int) degree));
+            degreeStart = -degree;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {}
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        //Set acc to accuracy
+        acc.setText(String.format("Acc: %s m", i));
+    }
 
 
 
