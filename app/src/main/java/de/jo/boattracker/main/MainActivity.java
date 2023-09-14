@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         avgSpeed.setTextSize(50f);
         heading.setTextSize(65f);
         heading.setText("0");
+
+        speeds.clear();
     }
 
     @Override
