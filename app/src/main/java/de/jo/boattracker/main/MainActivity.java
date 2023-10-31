@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -116,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 gpx.addLocation(location);
             } else {
                 Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
-                System.out.println("NO Speed");
+                Log.w("GPS","NO Speed");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("GPS", e.getMessage());
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("GPS", e.getMessage());
         }
     }
 
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             heading.setText(String.format("%s°", (int) degree));
             degreeStart = -degree;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("GPS", e.getMessage());
         }
 
     }
