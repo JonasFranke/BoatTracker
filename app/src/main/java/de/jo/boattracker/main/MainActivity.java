@@ -1,6 +1,7 @@
 package de.jo.boattracker.main;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,7 +10,9 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import de.jo.boattracker.R;
+import de.jo.boattracker.util.GPX;
 import de.jo.boattracker.util.SpeedConverter;
 
 import java.text.DecimalFormat;
@@ -31,17 +35,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     final static int PERM_ALL = 1;
 
     TextView loc, kn, maxSpeed, avgSpeed, heading, acc;
+    Button write;
 
     float maxSpeedD = 0.00f;
     private final ArrayList<Float> speeds = new ArrayList<>();
 
     float degreeStart = 0f;
 
+    private GPX gpx;
+
+    private static Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gpx = new GPX(getFilesDir());
 
         init();
 
@@ -51,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         SensorManage = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        context = this;
     }
 
     private void init() {
@@ -60,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         avgSpeed = findViewById(R.id.avgSpeed);
         heading = findViewById(R.id.heading);
         acc = findViewById(R.id.acc);
+        write = findViewById(R.id.writeButton);
 
         loc.setTextSize(16f);
         loc.setText("Lon:  Lat:");
@@ -73,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         heading.setText("0");
 
         speeds.clear();
+
+        write.setOnClickListener(gpx);
     }
 
     @Override
@@ -97,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                 speeds.add(SpeedConverter.shortenSpeed(speedKnots));
 
+                gpx.addLocation(location);
             } else {
                 Toast.makeText(this, "No Loc :(", Toast.LENGTH_SHORT).show();
                 System.out.println("NO Speed");
@@ -182,6 +199,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private void clearList(float currentAvg) {
         speeds.clear();
         speeds.add(currentAvg);
+    }
+
+    public static Context getContext() {
+        assert context != null;
+        return context;
     }
 
 }
